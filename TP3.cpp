@@ -23,6 +23,7 @@ char *TiposProductos[]={"Galletas","Snack","Cigarrillos","Caramelos","Bebidas"};
 void CargarClientes(Cliente *auxCargar,int cantClientes);
 void CargarProductos(Producto *auxProductos,int cantProductos);
 void MostrarVenta(Cliente *auxVenta,int cantClientes);
+float Total(Producto unidad);
 
 int main(){
     srand(time(NULL));
@@ -37,6 +38,7 @@ int main(){
     Cliente *visitas = (Cliente*)malloc(sizeof(Cliente)*cantClientes);//visitas apunta a la dir de primer cliente
     CargarClientes(visitas,cantClientes);
     MostrarVenta(visitas,cantClientes);
+    free(visitas);
     getchar();
     return 0;
 }
@@ -87,6 +89,7 @@ void CargarProductos(Producto *auxProductos,int cantProductos)
 void MostrarVenta(Cliente *auxVenta,int cantClientes){
     Cliente mostrarCliente;
     Producto mostrarProducto;
+    float suma;
     printf("\n\n==========================LISTA DE VENTAS==========================\n");
     for (int k = 0; k < cantClientes; k++)
     {
@@ -103,13 +106,17 @@ void MostrarVenta(Cliente *auxVenta,int cantClientes){
             printf("ID producto:%d\n",mostrarProducto.ProductoID);
             printf("Tipo de producto:[%s]\n",mostrarProducto.TipoProducto);
             printf("Cantidades pedidas:%d\n",mostrarProducto.Cantidad);
-            printf("Precio unitario: $%d\n\n",mostrarProducto.PrecioUnitario);
-            
+            printf("Precio unitario: $%.2f\n\n",mostrarProducto.PrecioUnitario);
+            suma = suma + Total(mostrarProducto);
         }
-            //printf("total a pagar:%d",total);
-            
-
+        printf("[Total a pagar:$%.2f]",suma);
         auxVenta++;
     }   
     
+}
+
+float Total(Producto unidad){
+	float total;
+	total = unidad.Cantidad * unidad.PrecioUnitario;
+	return total;
 }
