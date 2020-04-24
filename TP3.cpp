@@ -14,7 +14,7 @@ typedef struct{
 
 typedef struct{
     int ClienteID;                      // Numerado en el ciclo iterativo 
-    char NombreCliente[50];                // Ingresado por usuario
+    char *NombreCliente;                // Ingresado por usuario
     int CantidadProductosAPedir;        // (alteatorio entre 1 y 5)
     Producto *Productos;                //El tamaño de este arreglo depende de la variable CantidadProductosAPedir 
 }Cliente;
@@ -46,17 +46,26 @@ void CargarClientes(Cliente *auxCliente,int cantClientes)
     Cliente aux;
     for (int i = 0; i < cantClientes; i++)
     {
+        //ID
         aux.ClienteID = i+1;
-        printf("Ingrese el nombre del cliente #%d",i+1);
-        gets(aux.NombreCliente);
+        //NOMBRE
+        printf("Ingrese el nombre del cliente #%d: ",i+1);
+            fflush(stdin);
+            char nombre[500];
+            int a;
+            gets(nombre);
+            a = strlen(nombre);
+            aux.NombreCliente =(char*)malloc(sizeof(char)*a);
+            strcpy(aux.NombreCliente,nombre);
+            
+        //PRODUCTOS
         aux.CantidadProductosAPedir = rand()%10+1;
 
-        Producto *pedido = (Producto*)malloc(sizeof(Producto)*aux.CantidadProductosAPedir);
-        CargarProductos(pedido,aux.CantidadProductosAPedir);
+        aux.Productos = (Producto*)malloc(sizeof(Producto)*aux.CantidadProductosAPedir);
+        CargarProductos(aux.Productos,aux.CantidadProductosAPedir);
 
         *auxCliente = aux;
         auxCliente++;
-
     }
 }
 
@@ -68,7 +77,7 @@ void CargarProductos(Producto *auxProductos,int cantProductos)
         aux.ProductoID = j+1;
         aux.Cantidad = rand()%10 +1;
         aux.TipoProducto = *(TiposProductos + rand()%5);
-        aux.PrecioUnitario = rand()%91 +10;
+        aux.PrecioUnitario = rand()% 91 +10;
 
         *auxProductos = aux;
         auxProductos++;
@@ -82,20 +91,23 @@ void MostrarVenta(Cliente *auxVenta,int cantClientes){
     for (int k = 0; k < cantClientes; k++)
     {
         mostrarCliente = *auxVenta;
-        printf("Cliente #%d:",mostrarCliente.ClienteID);
-        printf("%s\n",mostrarCliente.NombreCliente);
+        printf("==========================\n\n");
+        printf("Cliente #%d: [",mostrarCliente.ClienteID);
+        printf("%s]\n",mostrarCliente.NombreCliente);
         printf("Cantidad de productos pedidos:%d\n",mostrarCliente.CantidadProductosAPedir);
         
         for (int l = 0; l < mostrarCliente.CantidadProductosAPedir; l++)
         {
             mostrarProducto = mostrarCliente.Productos[l];
-            printf("Producto #%d",l+1);
-            printf("ID producto:%d",mostrarProducto.ProductoID);
-            printf("Cantidades pedidas:%d",mostrarProducto.Cantidad);
-            printf("Precio unitario: %d",mostrarProducto.PrecioUnitario);
+            //printf("Producto #%d",l+1);
+            printf("ID producto:%d\n",mostrarProducto.ProductoID);
+            printf("Tipo de producto:[%s]\n",mostrarProducto.TipoProducto);
+            printf("Cantidades pedidas:%d\n",mostrarProducto.Cantidad);
+            printf("Precio unitario: $%d\n\n",mostrarProducto.PrecioUnitario);
+            
         }
             //printf("total a pagar:%d",total);
-            printf("\n\n==========================LISTA DE VENTAS==========================\n");
+            
 
         auxVenta++;
     }   
